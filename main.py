@@ -1,5 +1,7 @@
+import os
 from flask import Flask, url_for, request
-enctype="multipart/form-data"
+
+enctype = "multipart/form-data"
 
 app = Flask(__name__)
 
@@ -176,7 +178,7 @@ def listm():
 		</div>
 		</div>
 	</div>
-	
+
 </section>
 
 <footer>
@@ -209,6 +211,15 @@ def listm():
 
 </body>
 </html>'''
+
+
+def human_read_format(size):
+    values = ['Б', "КБ", "МБ", "ГБ"]
+    num = 0
+    while size >= 1024:
+        size /= 1024
+        num += 1
+    return f'{round(size)}{values[num]}'
 
 
 if __name__ == '__main__':
