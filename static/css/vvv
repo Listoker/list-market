@@ -1,0 +1,36 @@
+<!-- body { -->
+	margin: 0;
+	font-family:'Roboto' ;
+	font-size: 18px;
+}
+header {
+	padding-top: 59px;
+	background-color: #3a7dfd;
+	color: #fff;
+}
+.header-pretitle {
+	
+	margin-top: 102px;
+}
+.header-tetle {
+	font-size: 48px;
+	font-weight: 700;
+	line-height: 36.81px;
+	margin-top: 21px;
+}
+.header-subtitle {
+	
+	margin-top: 20px;
+}
+.header-button {
+	width: 200px;
+	height: 50px;
+	box-shadow: 10px 17px 34px 6px rgba(18, 61, 145, 0.83);
+	border-radius: 25px;
+	background-color: #ffffff;
+	color: #072d6f;
+	font-size: 18px;
+	font-weight: 700;
+	padding-top: 17px;
+
+}
