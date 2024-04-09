@@ -1,5 +1,6 @@
 from flask import Flask, url_for, render_template
 import os
+from flask_wtf import FlaskForm
 
 app = Flask(__name__)
 
@@ -26,6 +27,16 @@ def news():
             name.append(ii[0])
             foto.append(ii[1])
         return render_template('css/index.html', name=name, foto=foto, x=x)
+
+
+@app.route('/login-list-market')
+def login():
+    return render_template('css/login.html')
+
+
+@app.route('/register-list-market')
+def register():
+    return render_template('css/register.html')
 
 
 @app.route('/image_sample')
