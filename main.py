@@ -1,18 +1,17 @@
-from flask import Flask, url_for, render_template
-import os
-from flask_wtf import FlaskForm
+from flask import Flask, render_template, redirect
+from data import db_session
+from data.users import User
+import datetime
+from data.news import News
+from forms.user import RegisterForm
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 
-@app.route('/')
-def index():
-    return "Миссия Колонизация Марса"
-
-
-@app.route('/index')
-def cosmos():
-    return "И на Марсе будут яблони цвести!"
+def main():
+    db_session.global_init("db/blogs.db")
+    # app.run()
 
 
 @app.route('/list-market')
@@ -29,30 +28,38 @@ def news():
         return render_template('css/index.html', name=name, foto=foto, x=x)
 
 
-@app.route('/login-list-market')
-def login():
-    return render_template('css/login.html')
+@app.route("/")
+def index():
+    db_sess = db_session.create_session()
+    news = db_sess.query(News).filter(News.is_private != True)
+    return render_template("css/register.html", news=news)
 
 
-@app.route('/register-list-market')
-def register():
-    return render_template('css/register.html')
-
-
-@app.route('/image_sample')
-def image():
-    return f"""<!doctype html>
-                <html lang="en">
-                  <head>
-                    <meta charset="utf-8">
-                    <link rel="stylesheet" type="text/css" href="{url_for('static', filename='css/style123.css')}" />
-                    <title>Привет, Яндекс!</title>
-                  </head>
-                  <body>
-                    <h1>Первая HTML-страница</h1>
-                  </body>
-                </html>"""
+@app.route('/register', methods=['GET', 'POST'])
+def reqister():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        if form.password.data != form.password_again.data:
+            return render_template('css/register.html', title='Регистрация',
+                                   form=form,
+                                   message="Пароли не совпадают")
+        db_sess = db_session.create_session()
+        if db_sess.query(User).filter(User.email == form.email.data).first():
+            return render_template('css/register.html', title='Регистрация',
+                                   form=form,
+                                   message="Такой пользователь уже есть")
+        user = User(
+            name=form.name.data,
+            email=form.email.data,
+            about=form.about.data
+        )
+        user.set_password(form.password.data)
+        db_sess.add(user)
+        db_sess.commit()
+        return redirect('/login')
+    return render_template('css/register.html', title='Регистрация', form=form)
 
 
 if __name__ == '__main__':
+    main()
     app.run(port=8080, host='127.0.0.1')
