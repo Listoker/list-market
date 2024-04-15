@@ -27,6 +27,7 @@
  			<div class="container">
  				<div class="register">
  					<a href="/list-market_akkaynt">аккаунт</a>
+ 					
  				</div>
  				<div class="row">
  					<div class="col-lg-5">
@@ -48,15 +49,40 @@
         <img src="{{ url_for('static', filename='img/Screenshot_20220823_165513_com.whatsapp.jpg') }}" alt="Га">
     </div>
     <div class="vse_foto_tovarov">
-    {% for item in foto %}
-        <img src="{{ url_for('static', filename='img/Screenshot_20220823_165511_com.whatsapp.jpg') }}" alt="Га">
+    	{% set a = 1 %}
+    {% for item in tovari %}
+    <h3>{{ item }}</h3>
+
+
+        <div class="row">
+        	{% if a == 1 %}
+			<div class="col-md-6">
+				<div class="portfolio-col-1">
+					{% set itemm = "foto_tovarov/" + item + ".png" %}
+					<img src="{{ url_for('static', filename=itemm) }}" alt="Га">
+				<h3>В</h3>
+				<p class="portfolio-text">У "Га</p>
+				<a href="file:///C:/Users/egor5/OneDrive/%D0%A0%D0%B0%D0%B1%D0%BE%D1%87%D0%B8%D0%B9%20%D1%81%D1%82%D0%BE%D0%BB/website/css/index.html">{{ item }}</a>
+				</div>
+				{% set a = 2 %}
+			</div>
+			{% else %}
+
+			<div class="col-md-6">
+			<div class="portfolio-col-2">\
+				{% set itemm = "foto_tovarov/" + item + ".png" %}
+				<img src="{{ url_for('static', filename=itemm) }}" alt="">
+			<h3>Сайт </h3>
+			<p class="portfolio-text">О</p>
+			<a href="/login-list-market">{{ item }}</a>
+			</div>
+			{% set a = 1 %}
+			</div>
+			{% endif %}
+		</div>
     {% endfor %}
     </div>
-    	<div class="vse_okna">
-    			for(var i = 0; i < 10; i++) {
-   document.body.innerHTML += '<img src="{{ url_for('static', filename='img/Screenshot_20220823_165511_com.whatsapp.jpg') }}" alt="Га">'
-}
-    	</div>
+    	
 		<div class="row">
 			<div class="col-md-6">
 				<div class="portfolio-col-1">
