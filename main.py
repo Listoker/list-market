@@ -29,16 +29,11 @@ def main():
 
 @app.route('/list-market')
 def news():
-    with open('data_market/info_tovar.txt') as f:
+    with open('data_market/info_tovar.txt', encoding='UTF-8') as f:
         tovari = f.read().split('#')
         x = 0
-        name = []
-        foto = []
-        for i in tovari:
-            ii = i.split()
-            name.append(ii[0])
-            foto.append(ii[1])
-        return render_template('css/index.html', name=name, foto=foto, x=x)
+        print(tovari)
+        return render_template('css/index.html', tovari=tovari, x=x)
 
 
 @app.route('/list-market_')
