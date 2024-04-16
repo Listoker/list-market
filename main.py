@@ -1,10 +1,8 @@
-from flask import Flask, render_template, redirect
-from data import db_session
-from data.users import User
+import os
 import datetime
 from data.news import News
 from forms.user import RegisterForm
-from flask import Flask, redirect, render_template
+from flask import Flask, redirect, render_template, request
 from data import db_session
 from data.users import User
 from flask_wtf import FlaskForm
@@ -32,27 +30,31 @@ def news():
     with open('data_market/info_tovar.txt', encoding='UTF-8') as f:
         tovari = f.read().split('#')
         x = 0
-        print(tovari)
-        return render_template('css/index.html', tovari=tovari, x=x)
+        tovari_rasfasovka = []
+        a = 0
+        sam_tovar = ''
+        for i in tovari:
+            if a == 0:
+                sam_tovar = i
+                a = 1
+            else:
+                tovari_rasfasovka.append(sam_tovar + '#' + i)
+                a = 0
+        return render_template('css/index.html', tovari=tovari_rasfasovka, x=x)
 
 
 @app.route('/list-market_')
 def newss():
-    with open('data_market/info_tovar.txt') as f:
+    with open('data_market/info_tovar.txt', encoding='UTF-8') as f:
         tovari = f.read().split('#')
         x = 0
-        name = []
-        foto = []
-        for i in tovari:
-            ii = i.split()
-            name.append(ii[0])
-            foto.append(ii[1])
-        return render_template('css/index_reg.html', name=name, foto=foto, x=x)
+        print(tovari)
+        return render_template('css/index_reg.html', tovari=tovari, x=x)
 
 
 @app.route('/list-market_tovar')
 def tovar():
-    with open('data_market/info_tovar.txt') as f:
+    with open('data_market/info_tovar.txt', encoding='UTF-8') as f:
         tovari = f.read().split('#')
         x = 0
         name = []
@@ -66,16 +68,11 @@ def tovar():
 
 @app.route('/list-market_akkaynt')
 def akkaynt():
-    with open('data_market/info_tovar.txt') as f:
+    with open('data_market/info_tovar.txt', encoding='UTF-8') as f:
         tovari = f.read().split('#')
         x = 0
-        name = []
-        foto = []
-        for i in tovari:
-            ii = i.split()
-            name.append(ii[0])
-            foto.append(ii[1])
-        return render_template('css/akkaynt.html', name=name, foto=foto, x=x)
+        print(tovari)
+        return render_template('css/akkaynt.html', tovari=tovari, x=x)
 
 
 @app.route("/")
@@ -116,6 +113,32 @@ def reqister():
         db_sess.commit()
         return redirect('/login')
     return render_template('css/register.html', title='Регистрация', form=form)
+
+
+@app.route('/sozdanie_tovara', methods=['POST', 'GET'])
+def sample_file_upload():
+    if request.method == 'GET':
+        data = os.listdir('static/img')
+        data2 = []
+        for i in data:
+            data2.append('static/img/' + i)
+        data = data2
+        return render_template('css/sozdanie_tovara.html', data=data)
+    elif request.method == 'POST':
+        for i in range(1000):
+            if not os.path.exists('static/img/r' + str(i) + '.png'):
+                chislo = i
+                f = request.files['file']
+                f.save('static/img/r' + str(chislo) + '.png')
+                break
+        data = os.listdir('static/img')
+        data2 = []
+        for ii in data:
+            data2.append('static/img/' + ii)
+        data = data2
+        # with open('static/img/riana.png', 'wb') as ff:
+        # ff.write(f.read())
+        return render_template('css/sozdanie_tovara.html', data=data)
 
 
 if __name__ == '__main__':
