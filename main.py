@@ -125,12 +125,18 @@ def sample_file_upload():
         data = data2
         return render_template('css/sozdanie_tovara.html', data=data)
     elif request.method == 'POST':
-        for i in range(1000):
-            if not os.path.exists('static/img/r' + str(i) + '.png'):
-                chislo = i
-                f = request.files['file']
-                f.save('static/img/r' + str(chislo) + '.png')
-                break
+        print(123)
+        print(12345)
+        username = request.form.get('username')  # запрос к данным формы
+        password = request.form.get('password')
+
+        print(username)
+        f = request.form.get('email')
+        print(1222)
+        print(f)
+        f = request.files['file']
+        f.save('static/img/r.png')
+
         data = os.listdir('static/img')
         data2 = []
         for ii in data:
