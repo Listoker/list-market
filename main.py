@@ -13,6 +13,9 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 
+Polzovatel = 'qwert()'
+
+
 class LoginForm(FlaskForm):
     username = StringField('Логин', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
@@ -43,27 +46,11 @@ def news():
         return render_template('css/index.html', tovari=tovari_rasfasovka, x=x)
 
 
-@app.route('/list-market_')
-def newss():
-    with open('data_market/info_tovar.txt', encoding='UTF-8') as f:
-        tovari = f.read().split('#_[')
-        x = 0
-        print(tovari)
-        return render_template('css/index_reg.html', tovari=tovari, x=x)
-
-
-@app.route('/list-market_tovar')
-def tovar():
-    with open('data_market/info_tovar.txt', encoding='UTF-8') as f:
-        tovari = f.read().split('#_[')
-        x = 0
-        name = []
-        foto = []
-        for i in tovari:
-            ii = i.split()
-            name.append(ii[0])
-            foto.append(ii[1])
-        return render_template('css/tovar.html', name=name, foto=foto, x=x)
+@app.route('/list-market_tovar/<tovarr>')
+def tovar(tovarr):
+    with open(f'static/text_tovarov/{tovarr}.txt', encoding='UTF-8') as f:
+        text_vsego = f.read().split('#@{]')
+        return render_template('css/tovar.html', text_vsego=text_vsego, tovarr=tovarr, polzovatel=Polzovatel)
 
 
 @app.route('/list-market_akkaynt')
@@ -72,7 +59,28 @@ def akkaynt():
         tovari = f.read().split('#_[')
         x = 0
         print(tovari)
-        return render_template('css/akkaynt.html', tovari=tovari, x=x)
+        name = str(Polzovatel).split('"')[7]
+        return render_template('css/akkaynt.html', tovari=tovari, x=x, name=name)
+
+
+@app.route('/list-market_')
+def newss():
+    with open('data_market/info_tovar.txt', encoding='UTF-8') as f:
+        print(Polzovatel)
+        name = str(Polzovatel).split('"')[7]
+        tovari = f.read().split('#_[')
+        x = 0
+        tovari_rasfasovka = []
+        a = 0
+        sam_tovar = ''
+        for i in tovari:
+            if a == 0:
+                sam_tovar = i
+                a = 1
+            else:
+                tovari_rasfasovka.append(sam_tovar + '#' + i)
+                a = 0
+        return render_template('css/index_reg.html', tovari=tovari_rasfasovka, x=x, name=name)
 
 
 @app.route("/")
@@ -86,6 +94,8 @@ def index():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
+        global Polzovatel
+        Polzovatel = form.username
         return redirect('/list-market_')
     return render_template('css/login.html', title='Авторизация', form=form)
 
@@ -117,19 +127,21 @@ def reqister():
 
 @app.route('/sozdanie_tovara', methods=['POST', 'GET'])
 def sample_file_upload():
+    name = str(Polzovatel).split('"')[7]
     if request.method == 'GET':
         data = os.listdir('static/img')
         data2 = []
         for i in data:
             data2.append('static/img/' + i)
         data = data2
-        return render_template('css/sozdanie_tovara.html', data=data)
+        return render_template('css/sozdanie_tovara.html', data=data, name=name)
     elif request.method == 'POST':
         phone = request.form.get('phone')  # запрос к данным формы
         email = request.form.get('email')
         nousername = request.form.get('nouserName')
         city = request.form.get('city')
 
+        name = str(Polzovatel).split('"')[7]
         comment = request.form.get('comment')
         f = request.form.get('email')
         f = request.files['file']
@@ -139,12 +151,15 @@ def sample_file_upload():
             if not os.path.exists(f'static/img/foto_tovarov/{nousername}_{str(i)}.png'):
                 f.save(f'static/foto_tovarov/{nousername}_{str(i)}.png')
                 with open(f'static/text_tovarov/{nousername}_{str(i)}.txt', 'w', encoding='UTF-8') as tekst:
-                    comment = comment + '#@{]' + phone + '#@{]' + email + '#@{]' + city
+                    comment = comment + '#@{]' + phone + '#@{]' + email + '#@{]' + city + '#@{]' + name
                     tekst.write(comment)
-                with open('data_market/info_tovar.txt', 'r') as tovari:
+                with open('data_market/info_tovar.txt', 'r', encoding='UTF-8') as tovari:
                     tovari__ = tovari.read()
-                with open('data_market/info_tovar.txt', 'w') as tovari:
-                    tovari.write(tovari__ + '#_[' + nousername + '_' + str(i))
+                with open('data_market/info_tovar.txt', 'w', encoding='UTF-8') as tovari:
+                    if tovari__ == '':
+                        tovari.write(nousername + '_' + str(i))
+                    else:
+                        tovari.write(tovari__ + '#_[' + nousername + '_' + str(i))
                 break
 
         data = os.listdir('static/img')
@@ -155,7 +170,7 @@ def sample_file_upload():
         data = data2
         # with open('static/img/riana.png', 'wb') as ff:
         # ff.write(f.read())
-        return render_template('css/sozdanie_tovara.html', data=data)
+        return redirect('/list-market_')
 
 
 if __name__ == '__main__':

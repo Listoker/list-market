@@ -26,7 +26,7 @@
 		<header>
  			<div class="container">
  				<div class="register">
- 					<a href="/login">вернуться</a>
+ 					<a href="/list-market_">вернуться</a>
  				</div>
  				<div class="row">
  					<div class="col-lg-5">
@@ -44,37 +44,9 @@
 		<div class="porfolio-block wow fadeIn">
 		<h2 class="portfolio-title">Фотографии</h2>
 		<p class="porfolio-subtitle">Информация</p>
-		<div class="foto12345">
-        <img src="{{ url_for('static', filename='img/Screenshot_20220823_165513_com.whatsapp.jpg') }}" alt="Га">
-    </div>
-    <div class="vse_foto_tovarov">
-    {% for item in foto %}
-        <img src="{{ url_for('static', filename='img/Screenshot_20220823_165511_com.whatsapp.jpg') }}" alt="Га">
-    {% endfor %}
-    </div>
-    	<div class="vse_okna">
-    			for(var i = 0; i < 10; i++) {
-   document.body.innerHTML += '<img src="{{ url_for('static', filename='img/Screenshot_20220823_165511_com.whatsapp.jpg') }}" alt="Га">'
-}
-    	</div>
-		<div class="row">
-			<div class="col-md-6">
-				<div class="portfolio-col-1">
-					<img src="{{ url_for('static', filename='img/Screenshot_20220823_165511_com.whatsapp.jpg') }}" alt="Га">
-				<h3>В</h3>
-				<p class="portfolio-text">У "Га</p>
-				<a href="/sozdanie_tovara">Добавить товар</a>
-				</div>
-			</div>
-			<div class="col-md-6">
-			<div class="portfolio-col-2">
-				<img src="{{ url_for('static', filename='img/Screenshot_20220823_165514_com.whatsapp.jpg') }}" alt="">
-			<h3>Сайт </h3>
-			<p class="portfolio-text">О</p>
-			<a href="/login-list-market">позвонить</a>
-			</div>
-			</div>
-		</div>
+    
+    	<h1>Имя пользователя: {{ name }}</h1>
+    	<a href="/sozdanie_tovara">Добавить товар</a>
 		</div>
 	</div>
 	
