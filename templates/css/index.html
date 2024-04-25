@@ -47,7 +47,6 @@
 		<p class="porfolio-subtitle">Информация</p>
 		
     <div class="vse_foto_tovarov">
-    	
     {% for item in tovari %}
    
     {% set ff = item.split("#") %}
@@ -65,16 +64,17 @@
 				
 			</div>
 			
-
+			{% if item[-1] != "#" %}
 			<div class="col-md-6">
 			<div class="portfolio-col-2">
 				{% set itemm = "foto_tovarov/" + vtoroe + ".png" %}
-				<img src="{{ url_for('static', filename=itemm) }}" alt="">
+				<img src="{{ url_for('static', filename=itemm) }}" alt="ошибка">
 			<h3>Вы можете перейти по ссылке ниже:</h3>
 			<a href="/list-market_tovar/{{ vtoroe }}">{{ vtoroe }}</a>
 			</div>
 			
 			</div>
+			{% endif %}
 			
 		</div>
     {% endfor %}

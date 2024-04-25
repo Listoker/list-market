@@ -8,6 +8,7 @@ from data.users import User
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
+import sqlalchemy
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -30,6 +31,7 @@ def main():
 
 @app.route('/list-market')
 def news():
+    # главное окно
     with open('data_market/info_tovar.txt', encoding='UTF-8') as f:
         tovari = f.read().split('#_[')
         x = 0
@@ -43,31 +45,33 @@ def news():
             else:
                 tovari_rasfasovka.append(sam_tovar + '#' + i)
                 a = 0
+        if sam_tovar not in tovari_rasfasovka[-1]:
+            tovari_rasfasovka.append(sam_tovar + '#')
         return render_template('css/index.html', tovari=tovari_rasfasovka, x=x)
 
 
 @app.route('/list-market_tovar/<tovarr>')
 def tovar(tovarr):
+    # ссылка на показ товара
     with open(f'static/text_tovarov/{tovarr}.txt', encoding='UTF-8') as f:
         text_vsego = f.read().split('#@{]')
-        print(text_vsego)
         return render_template('css/tovar.html', text_vsego=text_vsego, tovarr=tovarr, polzovatel=Polzovatel)
 
 
 @app.route('/list-market_akkaynt')
 def akkaynt():
+    # ссылка на товар
     with open('data_market/info_tovar.txt', encoding='UTF-8') as f:
         tovari = f.read().split('#_[')
         x = 0
-        print(tovari)
         name = str(Polzovatel).split('"')[7]
         return render_template('css/akkaynt.html', tovari=tovari, x=x, name=name)
 
 
 @app.route('/list-market_')
 def newss():
+    # окно зарегистрированное
     with open('data_market/info_tovar.txt', encoding='UTF-8') as f:
-        print(Polzovatel)
         name = str(Polzovatel).split('"')[7]
         tovari = f.read().split('#_[')
         x = 0
@@ -81,6 +85,8 @@ def newss():
             else:
                 tovari_rasfasovka.append(sam_tovar + '#' + i)
                 a = 0
+        if sam_tovar not in tovari_rasfasovka[-1]:
+            tovari_rasfasovka.append(sam_tovar + '#')
         return render_template('css/index_reg.html', tovari=tovari_rasfasovka, x=x, name=name)
 
 
@@ -93,16 +99,20 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    # Войти в аккаунт
     form = LoginForm()
     if form.validate_on_submit():
         global Polzovatel
         Polzovatel = form.username
+        email = sqlalchemy.Column(sqlalchemy.String,
+                                  index=True, unique=True, nullable=True)
         return redirect('/list-market_')
     return render_template('css/login.html', title='Авторизация', form=form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def reqister():
+    # регистрация
     form = RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
@@ -128,6 +138,7 @@ def reqister():
 
 @app.route('/sozdanie_tovara', methods=['POST', 'GET'])
 def sample_file_upload():
+    # Добавление товара
     name = str(Polzovatel).split('"')[7]
     if request.method == 'GET':
         data = os.listdir('static/img')
@@ -137,6 +148,7 @@ def sample_file_upload():
         data = data2
         return render_template('css/sozdanie_tovara.html', data=data, name=name)
     elif request.method == 'POST':
+        # расфасовка
         phone = request.form.get('phone')  # запрос к данным формы
         email = request.form.get('email')
         nousername = request.form.get('nouserName')
@@ -149,6 +161,7 @@ def sample_file_upload():
         i = 0
         while True:
             i += 1
+            # сохранение всего
             if not os.path.exists(f'static/img/foto_tovarov/{nousername}_{str(i)}.png'):
                 f.save(f'static/foto_tovarov/{nousername}_{str(i)}.png')
                 with open(f'static/text_tovarov/{nousername}_{str(i)}.txt', 'w', encoding='UTF-8') as tekst:
