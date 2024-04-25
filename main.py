@@ -50,6 +50,7 @@ def news():
 def tovar(tovarr):
     with open(f'static/text_tovarov/{tovarr}.txt', encoding='UTF-8') as f:
         text_vsego = f.read().split('#@{]')
+        print(text_vsego)
         return render_template('css/tovar.html', text_vsego=text_vsego, tovarr=tovarr, polzovatel=Polzovatel)
 
 
